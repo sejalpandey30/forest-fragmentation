@@ -1,0 +1,7 @@
+# Kodagu (Coorg): coffee agroforestry matrix; second site for replication
+name: kodagu
+bbox: [75.60, 12.30, 75.85, 12.55]
+crs: EPSG:32643
+res: 30
+start_year: 2020
+end_year: 2025

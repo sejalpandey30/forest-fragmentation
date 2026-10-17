@@ -1,0 +1,3 @@
+{"type":"FeatureCollection","features":[
+ {"type":"Feature","properties":{"class":0,"note":"tea estate (example polygon, replace with your own)"},
+  "geometry":{"type":"Polygon","coordinates":[[[76.95,10.30],[76.96,10.30],[76.96,10.31],[76.95,10.31],[76.95,10.30]]]}}]}

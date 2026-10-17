@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ffa"
+version = "0.2.0"
+description = "Forest fragmentation analysis from open satellite data (Western Ghats case study)"
+requires-python = ">=3.9"
+dependencies = ["numpy", "scipy", "pandas", "scikit-learn", "matplotlib", "pyyaml",
+                "pystac-client", "odc-stac", "xarray", "rioxarray", "rasterio"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+ffa = "ffa.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

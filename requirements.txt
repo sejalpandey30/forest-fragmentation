@@ -1,0 +1,14 @@
+numpy
+scipy
+pandas
+scikit-learn
+matplotlib
+pyyaml
+# satellite data access (not needed for `demo` or the tests)
+pystac-client
+odc-stac
+xarray
+rioxarray
+rasterio
+# dev
+pytest

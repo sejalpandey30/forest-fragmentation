@@ -1,0 +1,7 @@
+# Valparai / Anamalai plateau: tea-estate matrix with rainforest fragments
+name: valparai
+bbox: [76.85, 10.25, 77.05, 10.45]   # lon_min, lat_min, lon_max, lat_max
+crs: EPSG:32643
+res: 30
+start_year: 2020
+end_year: 2025
