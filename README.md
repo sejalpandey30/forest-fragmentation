@@ -2,10 +2,6 @@
 
 A reproducible remote-sensing pipeline using Sentinel-2, Random Forest classification and landscape metrics to quantify changes in forest fragmentation (2020–2025). This repository contains code, configuration and demonstration outputs for research and reproducible analyses.
 
-Authors: YOUR NAME
-Contact: your.email@example.com
-Status: research prototype (v0.2)
-
 ---
 
 ## Abstract
