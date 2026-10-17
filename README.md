@@ -1,132 +1,59 @@
-# Quantifying Forest Habitat Fragmentation in the Western Ghats
+# Forest Fragmentation 🌲✨
 
-A reproducible remote-sensing pipeline using Sentinel-2, Random Forest classification and landscape metrics to quantify changes in forest fragmentation (2020–2025). This repository contains code, configuration and demonstration outputs for research and reproducible analyses.
+Welcome! This project explores forest fragmentation — what it is, how it changes over time, and why it matters. Whether you’re a curious human, a budding ecologist, or a developer who loves nature and data, this repo gives you approachable tools and visualizations to play with forest-change data.
 
----
+![Forest change demo](demo_fig1_forest_change.png)
 
-## Abstract
+Why this project? Because forests are not just trees — they are habitats, climate buffers, and living communities. When forests break into smaller pieces (fragment), ecosystems suffer. Forest Fragmentation helps you measure, visualize, and understand those changes.
 
-Habitat fragmentation—the subdivision of continuous forest into smaller, isolated patches—can drive biodiversity loss by increasing edge effects and reducing core habitat. This project provides a reproducible workflow to map forest/non-forest from Sentinel-2 imagery, compute landscape fragmentation metrics, and analyse trends and sensitivities across multiple sites in the Western Ghats.
+Highlights
+- Play with visual demos: demo_fig1_forest_change.png and demo_fig3_fragmentation_trends.png show what fragmentation and trends can look like.
+- Ready-to-run code: `run.py` gets you started quickly.
+- Modular codebase: core code lives in `src/` so you can reuse or extend analyses.
+- Reproducible environment: use `requirements.txt` or `pyproject.toml` to reproduce results.
+- Tests: `tests/` contains automated checks so you can tweak confidently.
 
-The code and data access are designed for transparency and reproducibility: all input datasets used are open (Sentinel-2 L2A, Copernicus DEM, ESA WorldCover, Hansen Global Forest Change). The repository includes a small synthetic demo (for testing) and configuration files to run site-specific analyses.
+Getting started (5 minutes)
+1. Clone this repo:
+   git clone https://github.com/sejalpandey30/forest-fragmentation.git
+2. Install dependencies (recommend a venv):
+   python -m venv .venv
+   source .venv/bin/activate  # or `.\.venv\Scripts\activate` on Windows
+   pip install -r requirements.txt
+3. Run the demo script:
+   python run.py
 
----
+What this does
+- run.py launches a short demo pipeline that walks through key steps: loading data, computing fragmentation metrics, and producing example visuals (see `demo_fig1_forest_change.png`, `demo_fig3_fragmentation_trends.png`).
+- `src/` holds the functions and modules that implement the core logic — think of it as the brain of the project. Peek inside to adapt metrics or add new visualizations.
 
-## Key research questions
+Project structure (quick tour)
+- src/ — core code and utilities (analysis, metrics, plotting)
+- configs/ — configuration files for experiments and reproducible runs
+- docs/ — background, extended explanations, and how-tos
+- tests/ — unit and integration tests
+- run.py — simple entry point to run the demo
+- requirements.txt, pyproject.toml — dependency declarations
+- demo_fig1_forest_change.png, demo_fig3_fragmentation_trends.png — example outputs you can inspect or use in reports
+- CITATION.cff — how to cite this work in papers or presentations
+- LICENSE — licensing information
 
-- RQ1: Do fragmentation metrics (edge density, perimeter-to-area ratio, shape index, effective mesh size, core-area share) show directional change between 2020 and 2025?
-- RQ2: Is observed change driven primarily by area loss or by spatial reconfiguration (splitting/perforation)?
-- RQ3: How robust are conclusions to pre-processing choices (minimum patch size, smoothing, temporal filtering)?
+How you can help (and make an impact)
+- Try the demo: run the code and open the images. If something looks off, file an issue with a screenshot and steps to reproduce.
+- Add a metric: think of connectivity, edge density, or core patch size? Implement it in `src/` and add tests in `tests/`.
+- Improve docs: add a notebook walkthrough to `docs/` or a short explainer for non-technical audiences.
+- Share results: if you publish work using these scripts, add your DOI to CITATION.cff and cite the repo.
 
-Working hypothesis: fragmentation indicators increase (more edge, higher P/A) while connectivity measures (core-area share, effective mesh size) decrease, even where total forest area changes modestly.
+A friendly challenge
+Fork this repo, change one metric, and create a short before/after visualization — then open a PR. Small changes can reveal big ecological stories.
 
----
+Citing this work
+Please use the information in CITATION.cff when referencing this project in academic work.
 
-## Study areas
+License
+This project is available under the terms in `LICENSE`.
 
-- Valparai / Anamalai Plateau — rainforest fragments inside a tea-estate matrix. Config: `configs/valparai.yaml`.
-- Kodagu (Coorg) — coffee agroforestry matrix; replication site. Config: `configs/kodagu.yaml`.
+Contact
+Created with care by @sejalpandey30. Got ideas, bugs, or collaborators? Open an issue or a PR — I’d love to hear from you.
 
-Add a site by copying a YAML config in `configs/` and updating the `bbox` and metadata.
-
----
-
-## Datasets (open)
-
-- Sentinel-2 L2A (10–20 m) — optical features (via AWS Earth Search STAC / Copernicus)
-- Copernicus DEM GLO-30 — elevation and slope (via AWS Earth Search STAC)
-- ESA WorldCover v200/v100 — label source for training / label-transfer checks
-- Hansen Global Forest Change — independent loss validation
-
-See code in src/ffa/data.py for the exact access routines and caching behaviour.
-
----
-
-## Methods (pipeline overview)
-
-1. Image compositing: annual dry-season composites (1 Jan–30 Apr), cloud-masked and aggregated to reduce residual cloud and seasonal noise.
-2. Feature extraction: spectral bands, vegetation indices (NDVI, NDWI, NBR, NDMI), temporal NDVI std, local NDVI texture, elevation and slope (≈17 features).
-3. Labels: WorldCover tree cover as positive class; border/mixed pixels eroded; low NDVI pixels filtered to reduce label noise.
-4. Classifier: Random Forest (200 trees), class-balanced sampling. Trained on 2021 labels and applied across years.
-5. Post-processing: probability thresholding, 3×3 smoothing, remove patches < 1 ha, fill holes < 0.5 ha. Optional temporal median filter.
-6. Landscape metrics: patch count, perimeter/area, shape index, edge density, core-area share (≥100 m buffer), effective mesh size (Jaeger 2000).
-7. Trend analysis: percent change, Theil–Sen slope, Kendall's τ; sensitivity analysis across parameter combinations.
-
----
-
-## Validation design
-
-- Spatial block cross-validation (2 km blocks, 5 folds) to avoid spatial leakage between train/test.
-- Label-transfer check: test maps produced for 2020 against WorldCover 2020.
-- Change validation: compare detected loss to Hansen annual loss (noting Hansen maps stand-replacing loss only).
-- Sensitivity: run combinations of temporal window, smoothing and minimum patch size to report robustness.
-
----
-
-## Quick start
-
-```bash
-git clone https://github.com/sejalpandey30/forest-fragmentation
-cd forest-fragmentation
-python -m venv .venv && source .venv/bin/activate    # macOS/Linux
-# Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-pytest -q
-python run.py demo                     # synthetic demo (~1 min)
-python run.py analyze --config configs/valparai.yaml --res 60  # fast test
-python run.py analyze --config configs/valparai.yaml          # full run (default resolution)
-```
-
-Composites and intermediate data are cached under `data/cache/` for faster re-runs.
-
----
-
-## Typical outputs (written to outputs/<site>/)
-
-- figures/fig1_forest_change.png — first-year, last-year and loss/gain map (example below)
-- figures/fig2_forest_timeseries.png — forest extent per year
-- figures/fig3_fragmentation_trends.png — metrics time series, percent change and Sen slope (example below)
-- figures/fig4_accuracy.png, fig5_feature_importance.png — validation and variable importance
-- tables/*.csv, *.json — metrics, trend statistics, CV folds, sensitivity and validation summaries
-- rasters/forest_YYYY.tif — georeferenced binary maps for GIS
-- results.md — auto-generated run summary suitable for inclusion in manuscripts
-
----
-
-## Demonstration outputs (synthetic demo)
-
-The images below illustrate the demo outputs produced by `python run.py demo`. These are synthetic and intended to demonstrate the pipeline; they are not empirical findings about the Western Ghats.
-
-![Demo: forest change map](demo_fig1_forest_change.png)
-
-![Demo: fragmentation trends](demo_fig3_fragmentation_trends.png)
-
----
-
-## Limitations and threats to validity
-
-- Plantations (tea, coffee shade, rubber) can be misclassified as native forest; WorldCover does not distinguish plantations from natural forest.
-- Label transfer across years assumes stable spectral relationships; sensor drift, phenology and residual clouds can induce artefactual change.
-- Spatial resolution (30 m) misses narrow features (minor roads, small clearings); run at 10 m on small areas for finer edges.
-- Hansen loss detects stand-replacing loss and will undercount subtle edge degradation.
-- Metric edge effects at the analysis window boundary must be interpreted cautiously.
-- No field validation in repository — adding field plots or high-resolution manual labels would strengthen accuracy assessment.
-
----
-
-## Reproducibility and extensibility
-
-- All analysis is deterministic given the same inputs and random seed. Results and figures are saved under `outputs/<site>/` and `results.md` provides a concise run summary for papers.
-- To extend: add plantation-native separation labels, include driver datasets (roads, protected areas), test deep segmentation (U-Net) at 10 m, or link metrics to species occurrence data.
-
----
-
-## How to cite
-
-If you use this code in research, cite the repository and relevant datasets (Sentinel-2, WorldCover, Hansen). See `CITATION.cff` for a machine-readable citation.
-
----
-
-## License
-
-Code: MIT. Input datasets are subject to their respective terms (Copernicus, ESA WorldCover CC BY 4.0, Hansen data terms).
+Thanks for checking out Forest Fragmentation — build, learn, and protect the green!
