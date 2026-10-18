@@ -3,7 +3,6 @@ message: "If you use this software, please cite it."
 title: "ffa: Forest fragmentation analysis from open satellite data"
 version: 0.2.0
 authors:
-  - family-names: "YOUR LAST NAME"
-    given-names: "YOUR FIRST NAME"
+  - family-names: "Sejal Pandey"
 license: MIT
-repository-code: "https://github.com/YOUR-USERNAME/forest-fragmentation"
+repository-code: "https://github.com/sejalpandey30/forest-fragmentation/"
